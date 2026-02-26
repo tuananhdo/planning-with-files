@@ -40,13 +40,19 @@ Install just for yourself:
 # Clone the repo
 git clone https://github.com/OthmanAdi/planning-with-files.git /tmp/planning-with-files
 
-# Copy to your personal Mastra Code skills folder
+# Copy skill to your personal Mastra Code skills folder
 mkdir -p ~/.mastracode/skills
 cp -r /tmp/planning-with-files/.mastracode/skills/planning-with-files ~/.mastracode/skills/
+
+# Copy hooks (required for plan enforcement)
+# If you already have ~/.mastracode/hooks.json, merge the entries manually
+cp /tmp/planning-with-files/.mastracode/hooks.json ~/.mastracode/hooks.json
 
 # Clean up
 rm -rf /tmp/planning-with-files
 ```
+
+> **Note:** If you already have a `~/.mastracode/hooks.json`, do not overwrite it. Instead, merge the PreToolUse, PostToolUse, and Stop entries from the skill's hooks.json into your existing file.
 
 ### Verification
 
@@ -60,15 +66,20 @@ Restart your Mastra Code session. The skill auto-activates when you work on comp
 
 ## How It Works
 
-### Hooks (Native Support)
+### Hooks (via hooks.json)
 
-Mastra Code supports the same hook system as Claude Code. This integration includes:
+Mastra Code uses a separate `hooks.json` file for lifecycle hooks. This is different from Claude Code, which defines hooks in SKILL.md frontmatter. Mastra Code reads hooks from:
 
-| Hook | Trigger | What It Does |
+1. `.mastracode/hooks.json` (project-level, highest priority)
+2. `~/.mastracode/hooks.json` (global)
+
+This integration includes a pre-configured `hooks.json` with all three hooks:
+
+| Hook | Matcher | What It Does |
 |------|---------|--------------|
-| **PreToolUse** | Before Write, Edit, Bash, Read, Glob, Grep | Reads first 30 lines of `task_plan.md` — keeps goals in attention |
-| **PostToolUse** | After Write, Edit | Reminds you to update plan status |
-| **Stop** | When agent finishes | Runs completion check script |
+| **PreToolUse** | Write, Edit, Bash, Read, Glob, Grep | Reads first 30 lines of `task_plan.md` to keep goals in attention |
+| **PostToolUse** | Write, Edit | Reminds you to update plan status after file changes |
+| **Stop** | (all) | Runs `check-complete.sh` to verify all phases are done |
 
 ### Auto-Activation
 
@@ -94,8 +105,8 @@ Once activated, the skill creates:
 
 Mastra Code reads from `.claude/skills/` as a fallback. If you already have planning-with-files installed for Claude Code, it will work — but the dedicated `.mastracode/` installation gives you:
 
-- Native hooks integration (PreToolUse, PostToolUse, Stop)
-- Correct script path resolution
+- Native hooks via `hooks.json` (PreToolUse, PostToolUse, Stop)
+- Correct script path resolution for Mastra Code directories
 - No path conflicts with Claude Code plugin root
 
 ---
@@ -147,7 +158,11 @@ With personal installation (`~/.mastracode/skills/`):
 
 ### Hooks Not Running?
 
-Check `.mastracode/hooks.json` for conflicts. The skill's hooks are defined in SKILL.md frontmatter and should work automatically.
+Mastra Code reads hooks from `hooks.json`, not from SKILL.md frontmatter. Verify:
+
+1. Check that `.mastracode/hooks.json` exists in your project root (workspace install) or `~/.mastracode/hooks.json` (personal install)
+2. Verify the file contains PreToolUse, PostToolUse, and Stop entries
+3. Restart Mastra Code after adding or modifying hooks.json
 
 ### Already Using Claude Code?
 

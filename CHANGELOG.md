@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.18.2] - 2026-02-26
+
+### Fixed
+
+- **Mastra Code hooks were silently doing nothing**
+  - Root cause: Mastra Code reads hooks from `.mastracode/hooks.json`, not from SKILL.md frontmatter. The existing integration had hooks defined only in SKILL.md (Claude Code format), which Mastra Code ignores entirely. All three hooks (PreToolUse, PostToolUse, Stop) were non-functional.
+  - Added `.mastracode/hooks.json` with proper Mastra Code format including `matcher`, `timeout`, and `description` fields
+  - Fixed `MASTRACODE_SKILL_ROOT` env var in SKILL.md Stop hook (variable does not exist in Mastra Code, replaced with `$HOME` fallback to local path)
+  - Bumped `.mastracode/skills/planning-with-files/SKILL.md` metadata version from 2.16.1 to 2.18.1
+  - Corrected `docs/mastra.md` to accurately describe hooks.json (removed false claim that Mastra Code uses the same hook system as Claude Code)
+  - Fixed personal installation instructions to include hooks.json copy step
+
+---
+
 ## [2.18.1] - 2026-02-26
 
 ### Fixed
