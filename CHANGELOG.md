@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.19.0] - 2026-03-04
+
+### Fixed
+
+- **Codex Advanced Topics broken links** (PR #92 by @tt-a1i, fixes #91)
+  - Corrected two dead links in `.codex/skills/planning-with-files/SKILL.md`
+  - `reference.md` → `references/reference.md`
+  - `examples.md` → `references/examples.md`
+
+### Thanks
+
+- @tt-a1i for identifying and fixing the broken Codex links (PR #92)
+
+---
+
 ## [2.18.3] - 2026-02-28
 
 ### Fixed
